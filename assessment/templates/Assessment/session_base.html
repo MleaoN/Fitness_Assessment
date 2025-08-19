@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Session</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e6f7e6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .session-container {
+            border: 3px double #2e8b57;
+            padding: 20px;
+            background-color: white;
+            max-width: 800px;
+            width: 90%;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #2e8b57;
+        }
+
+        form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            padding: 4px;
+            font-size: 0.9em;
+        }
+
+        .buttons {
+            grid-column: span 2;
+            display: flex;
+            justify-content: flex-start;
+            margin-top: 20px;
+        }
+
+        .buttons button {
+            background-color: #2e8b57;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            margin-right: 10px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .buttons button:hover {
+            background-color: #256b45;
+        }
+    </style>
+</head>
+<body>
+    <div class="session-container">
+        <h1>Sessions</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="buttons">
+                <button type="submit" name="back">Back</button>
+                <button type="submit" name="next">Next</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

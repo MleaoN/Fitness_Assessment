@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fitness Assessment</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .step { display: none; }
+        .step.active { display: block; }
+        .form-group { margin-bottom: 10px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; }
+        input { padding: 8px; width: 300px; }
+        button { padding: 10px 15px; margin-top: 10px; }
+    </style>
+    <script>
+        let currentStep = 0;
+        function showStep(step) {
+            const steps = document.querySelectorAll(".step");
+            steps.forEach((el, idx) => {
+                el.classList.toggle("active", idx === step);
+            });
+        }
+        function nextStep() { currentStep++; showStep(currentStep); }
+        function prevStep() { currentStep--; showStep(currentStep); }
+        window.onload = () => { showStep(currentStep); };
+    </script>
+</head>
+<body>
+    <h1>Fitness Assessment</h1>
+    <form method="POST">
+        {% csrf_token %}
+
+        <!-- Step 1: Client Info -->
+        <div class="step">
+            <h2>Session 1 - Client Information</h2>
+            {% for field in session1_form %}
+                <div class="form-group">
+                    {{ field.label_tag }} {{ field }}
+                    {% if field.help_text %}<small>{{ field.help_text }}</small>{% endif %}
+                </div>
+            {% endfor %}
+            <button type="button" onclick="nextStep()">Next</button>
+        </div>
+
+        <!-- Step 2: Body Composition -->
+        <div class="step">
+            <h2>Session 2 - Body Composition & Anthropometrics</h2>
+            {% for field in session2_form %}
+                <div class="form-group">
+                    {{ field.label_tag }} {{ field }}
+                    {% if field.help_text %}<small>{{ field.help_text }}</small>{% endif %}
+                </div>
+            {% endfor %}
+            <button type="button" onclick="prevStep()">Back</button>
+            <button type="button" onclick="nextStep()">Next</button>
+        </div>
+
+        <!-- Step 3: Fitness Tests -->
+        <div class="step">
+            <h2>Session 3 - Fitness Tests</h2>
+            {% for field in session3_form %}
+                <div class="form-group">
+                    {{ field.label_tag }} {{ field }}
+                    {% if field.help_text %}<small>{{ field.help_text }}</small>{% endif %}
+                </div>
+            {% endfor %}
+            <button type="button" onclick="prevStep()">Back</button>
+            <button type="submit">Submit</button>
+        </div>
+    </form>
+</body>
+</html>

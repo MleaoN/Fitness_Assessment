@@ -1,0 +1,91 @@
+{% extends "assessment/base.html" %}
+{% load custom_filters %}
+{% block content %}
+
+<style>
+    h1, h2 {
+        text-align: center;
+    }
+</style>
+
+<div class="container mt-4">
+    <h2 class="mb-4"> {{ session1_data.first_name }} {{ session1_data.last_name }} - Fitness Report </h2>
+
+    <!-- SESSION 1 – Client Info -->
+    <div class="card mb-3">
+        <div class="card-header">Client Info</div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4"><strong>First Name:</strong> {{ session1_data.first_name }}</div>
+                <div class="col-md-4"><strong>Last Name:</strong> {{ session1_data.last_name }}</div>
+                <div class="col-md-4"><strong>Age:</strong> {{ session1_data.age }}</div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-4"><strong>Gender:</strong> {{ session1_data.gender }}</div>
+                <div class="col-md-4"><strong>Height:</strong> {{ session1_data.height_cm }} cm</div>
+                <div class="col-md-4"><strong>Weight:</strong> {{ session1_data.weight_kg }} kg</div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-4"><strong>Resting HR:</strong> {{ session1_data.resting_hr }} bpm</div>
+                <div class="col-md-4"><strong>Blood Pressure:</strong> {{ session1_data.systolic_bp }}/{{ session1_data.diastolic_bp }} mmHg</div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- SESSION 2 – Body Composition -->
+    <div class="card mb-3">
+        <div class="card-header">Body Composition & Circumferences</div>
+        <div class="card-body">
+            <!-- Anthropometric circumferences -->
+            <div class="mb-2">
+                <div class="row mb-2">
+                    {% for name, value in circumferences.items|slice:":3" %}
+                    <div class="col"><strong>{{ name|capfirst }}:</strong> {{ value }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="row mt-3">
+                {% for calc, val in calculations.items %}
+                <div class="col-md-4"><strong>{{ calc }}:</strong> {{ val }}</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- SESSION 3 – Ramp Test & BMI -->
+    <div class="card mb-3">
+        <div class="card-header">Ramp Test & BMI</div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 text-center">
+                    <h6>BMI Plot</h6>
+                    <img src="data:image/png;base64,{{ session4_data.bmi_plot }}" class="img-fluid" alt="BMI Plot">
+                </div>
+                <div class="col-md-6 text-center">
+                    <h6>Ramp Test</h6>
+                    <img src="data:image/png;base64,{{ session3_data.ramp_plot }}" class="img-fluid" alt="Ramp Test Plot">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SESSION 4 – Physical Tests & Classifications -->
+    <div class="card mb-3">
+        <div class="card-header">Physical Tests & Classifications</div>
+        <div class="card-body">
+            <div class="row">
+                {% for test, classification in classifications.items %}
+                <div class="col-md-3 mb-2">
+                    <strong>{{ test|replace:"_, " }}:</strong>
+                    <span
+                        class="{% if classification == 'Poor' %}text-danger{% elif classification in 'Below Average Average' %}text-warning{% else %}text-success{% endif %}">
+                        {{ classification }}
+                    </span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

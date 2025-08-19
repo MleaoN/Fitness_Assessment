@@ -1,0 +1,108 @@
+<!-- templates/assessment/home.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fitness Assessment</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            padding-top: 30px;
+            background-color: #f8f9fa;
+        }
+        .form-section {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .section-title {
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: #333;
+        }
+        .plot-img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        .results-table th, .results-table td {
+            vertical-align: middle;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 class="text-center mb-4">Fitness Assessment Form</h1>
+
+    <!-- Form Section -->
+    <div class="form-section">
+        <form method="post" novalidate>
+            {% csrf_token %}
+            
+            <!-- Render all form fields -->
+            {% for field in form %}
+                <div class="mb-3">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {% if field.help_text %}
+                        <small class="form-text text-muted">{{ field.help_text }}</small>
+                    {% endif %}
+                    {% for error in field.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+            
+            <button type="submit" class="btn btn-primary w-100">Submit Assessment</button>
+        </form>
+    </div>
+
+    <!-- Results Section -->
+    {% if results %}
+    <div class="form-section">
+        <h2 class="section-title">Results Summary</h2>
+        
+        <!-- Metrics -->
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <ul class="list-group">
+                    <li class="list-group-item"><strong>BMI:</strong> {{ results.bmi }}</li>
+                    <li class="list-group-item"><strong>Waist-Hip Ratio:</strong> {{ results.whr }}</li>
+                    <li class="list-group-item"><strong>Body Fat %:</strong> {{ results.body_fat }}</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <ul class="list-group">
+                    <li class="list-group-item"><strong>One-Leg Stance:</strong> {{ results.ols_results }}</li>
+                    <li class="list-group-item"><strong>Plank:</strong> {{ results.plank_results }}</li>
+                    <li class="list-group-item"><strong>Push-Ups:</strong> {{ results.pushup_results }}</li>
+                    <li class="list-group-item"><strong>Squats:</strong> {{ results.squat_results }}</li>
+                    <li class="list-group-item"><strong>Toe Touch:</strong> {{ results.toe_touch_results }}</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Plots -->
+        <h3 class="section-title">Plots</h3>
+        <div class="row">
+            <div class="col-md-6">
+                <h5>BMI Curve</h5>
+                <img src="data:image/png;base64,{{ results.plots.bmi }}" alt="BMI Plot" class="plot-img">
+            </div>
+            <div class="col-md-6">
+                <h5>Ramp Test</h5>
+                <img src="data:image/png;base64,{{ results.plots.ramp }}" alt="Ramp Test Plot" class="plot-img">
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
