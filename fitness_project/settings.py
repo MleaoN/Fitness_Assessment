@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-2sm3d^%nt(lbhwc%j(fs&#u^h*^+rqoy+_=)esn&fr=k1)f^ko
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 # Allow Render.com hostname and localhost for development
-ALLOWED_HOSTS = ['fitness-web.onrender.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['fitness-assessment.onrender.com', 'localhost', '127.0.0.1']
 
 # Application definition
 INSTALLED_APPS = [
