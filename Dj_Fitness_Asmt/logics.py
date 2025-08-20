@@ -298,7 +298,7 @@ def process_client_data(data):
     # Compute balance separately
     ols_results = {
         "OLS_Open_Right": classify_metric("OLS", data["gender"], data["age"], data["one_leg_stance_right_eyes_open_sec"]),
-        "OLS_Open_Left": classify_metric("OLS", data["gender"], data["age"], data["one_leg_stance_Left_eyes_open_sec"]),
+        "OLS_Open_Left": classify_metric("OLS", data["gender"], data["age"], data["one_leg_stance_left_eyes_open_sec"]),
         "OLS_Closed_Right": classify_metric("OLS", data["gender"], data["age"], data["one_leg_stance_right_eyes_closed_sec"]),
         "OLS_Closed_Left": classify_metric("OLS", data["gender"], data["age"], data["one_leg_stance_left_eyes_closed_sec"]),
     }
