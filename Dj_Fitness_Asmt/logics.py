@@ -114,6 +114,7 @@ def plot_ramp_test(loads, rpe_values):
 # ----------------------
 TEST_CONSTANTS = {
     "BMI": {"Male": [18.5, 25, 30], "Female": [18.5, 25, 30]},
+    "vertical_jump_power":EXPLOSIVE_POWER_TABLE,
     "WHR": WHR_RANGES,
     "BodyFat": BODY_FAT_TABLE,
     "PushUp": push_thresholds,
@@ -275,6 +276,7 @@ def process_client_data(data):
     bmi = calculate_bmi(data["weight_kg"], data["height_cm"])
     whr = calculate_whr(data["waist_cm"], data["hip_cm"])
     body_fat = calculate_body_fat(data["gender"], data["age"], skinfolds)
+    vertical_jump_power= calculate_whr(data["weight_kg"], data["vertical_jump_height_cm"])
 
     # Ramp Test
     ramp_loads = [float(x.strip()) for x in data["ramp_test_loads"].split(",")]
@@ -286,6 +288,7 @@ def process_client_data(data):
         "BMI": classify_metric("BMI", data["gender"], data["age"], bmi),
         "WHR": classify_metric("WHR", data["gender"],  data["age"], whr),
         "Body Fat": classify_metric("BodyFat", data["gender"], data["age"], body_fat),
+        "vertical_jump_power": classify_metric("vertical_jump_power", data["gender"], data["age"], vertical_jump_power)
         "PushUps": classify_metric("PushUp", data["gender"], data["age"], data["pushup_count"]),
         "Squats": classify_metric("Squat", data["gender"], data["age"], data["squat_count"]),
         "Plank": classify_metric("Plank", data["gender"], data["age"], data["plank_hold_seconds"]),
@@ -320,7 +323,7 @@ def process_client_data(data):
     }
 
     return {
-        "calculations": {"BMI": bmi, "WHR": whr, "BodyFat": body_fat},
+        "calculations": {"BMI": bmi, "WHR": whr, "BodyFat": body_fat, "vertical_jump_power": vertical_jump_height_cm},
         "classifications": classifications,
         "circumferences": circumferences,
         "plots": plots
