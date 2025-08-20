@@ -288,7 +288,7 @@ def process_client_data(data):
         "BMI": classify_metric("BMI", data["gender"], data["age"], bmi),
         "WHR": classify_metric("WHR", data["gender"],  data["age"], whr),
         "Body Fat": classify_metric("BodyFat", data["gender"], data["age"], body_fat),
-        "vertical_jump_power": classify_metric("vertical_jump_power", data["gender"], data["age"], vertical_jump_power)
+        "vertical_jump_power": classify_metric("vertical_jump_power", data["gender"], data["age"], vertical_jump_power),
         "PushUps": classify_metric("PushUp", data["gender"], data["age"], data["pushup_count"]),
         "Squats": classify_metric("Squat", data["gender"], data["age"], data["squat_count"]),
         "Plank": classify_metric("Plank", data["gender"], data["age"], data["plank_hold_seconds"]),
