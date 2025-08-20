@@ -276,7 +276,8 @@ def process_client_data(data):
     bmi = calculate_bmi(data["weight_kg"], data["height_cm"])
     whr = calculate_whr(data["waist_cm"], data["hip_cm"])
     body_fat = calculate_body_fat(data["gender"], data["age"], skinfolds)
-    vertical_jump_power= calculate_whr(data["weight_kg"], data["vertical_jump_height_cm"])
+    vertical_jump_power = calculate_power(data["weight_kg"], data["vertical_jump_height_cm"])
+
 
     # Ramp Test
     ramp_loads = [float(x.strip()) for x in data["ramp_test_loads"].split(",")]
@@ -323,7 +324,7 @@ def process_client_data(data):
     }
 
     return {
-        "calculations": {"BMI": bmi, "WHR": whr, "BodyFat": body_fat, "vertical_jump_power": vertical_jump_height_cm},
+        "calculations": {"BMI": bmi, "WHR": whr, "BodyFat": body_fat, "vertical_jump_power": vertical_jump_power},
         "classifications": classifications,
         "circumferences": circumferences,
         "plots": plots
