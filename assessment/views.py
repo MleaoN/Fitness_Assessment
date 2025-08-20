@@ -78,9 +78,9 @@ def session4(request):
             form['toe_touch_cm'],
         ],
         'endurance_fields_row2': [
-            form['one_leg_stance_rigth_eyes_open_sec'],
-            form['one_leg_stance_Left_eyes_open_sec'],
-            form['one_leg_stance_rigth_eyes_closed_sec'],
+            form['one_leg_stance_right_eyes_open_sec'],
+            form['one_leg_stance_left_eyes_open_sec'],
+            form['one_leg_stance_right_eyes_closed_sec'],
             form['one_leg_stance_left_eyes_closed_sec'],
         ],
     })
