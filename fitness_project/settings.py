@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(BASE_DIR))  # <-- project root
 
 # SECRET_KEY and DEBUG from environment variables for security
-SECRET_KEY = 'django-insecure-2sm3d^%nt(lbhwc%j(fs&#u^h*^+rqoy+_=)esn&fr=k1)f^ko'
+SECRET_KEY = '65b42bc7273e6abe5e048ca074dce38e'
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 # Allow Render.com hostname and localhost for development
