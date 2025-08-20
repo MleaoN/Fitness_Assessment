@@ -24,7 +24,7 @@ sys.path.insert(0, str(BASE_DIR))  # <-- project root
 
 # SECURITY SETTINGS
 SECRET_KEY = os.environ.get('SECRET_KEY', '65b42bc7273e6abe5e048ca074dce38e')
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+DEBUG = False
 
 ALLOWED_HOSTS = ['fitness-assessment.onrender.com', 'localhost', '127.0.0.1']
 
@@ -100,21 +100,17 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # LOGGING - write full traceback to debug.log
+# LOGGING (minimal, production-safe)
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'handlers': {
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': BASE_DIR / 'debug.log',
+        'console': {  # log only errors/warnings to console
+            'class': 'logging.StreamHandler',
         },
     },
-    'loggers': {
-        'django': {
-            'handlers': ['file'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
+    'root': {
+        'handlers': ['console'],
+        'level': 'WARNING',
     },
 }
