@@ -113,7 +113,7 @@ def plot_ramp_test(loads, rpe_values):
 # TEST_CONSTANTS for classify_metric
 # ----------------------
 TEST_CONSTANTS = {
-    "BMI": {"Male": [18.5, 22, 25], "Female": [18.5, 22, 25]},
+    "BMI": {"Male": [18.5, 25, 30], "Female": [18.5, 25, 30]},
     "WHR": WHR_RANGES,
     "BodyFat": BODY_FAT_TABLE,
     "PushUp": push_thresholds,
@@ -171,6 +171,16 @@ def classify_metric(test_name, gender, age, value):
         elif value >= perc[2]: return "Below Average"
         return "Poor"
 
+     # BMI special case
+    if test_name == "BMI":
+        if value < 18.5:
+            return "Underweight"
+        elif value < 25:
+            return "Normal"
+        elif value < 30:
+            return "Overweight"
+        else:
+            return "Obese"
     # Standard thresholds
     age_ranges = thresholds_dict.get(gender_key)
     
