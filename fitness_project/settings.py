@@ -55,8 +55,8 @@ ROOT_URLCONF = 'fitness_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # optional custom templates folder
-        'APP_DIRS': True,
+        'DIRS': [BASE_DIR / 'templates'],  # global templates folder
+        'APP_DIRS': True,                  # this enables app-level templates
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
