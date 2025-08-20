@@ -196,5 +196,6 @@ TEST_CONSTANTS = {
     "OLS": OLS_THRESHOLDS,
     "ToeTouch": TOE_TOUCH_THRESHOLDS,
     "BMI": None,      # special handling in classify_metric
-    "BodyFat": BODY_FAT_TABLE
+    "BodyFat": BODY_FAT_TABLE,
+    "vertical_jump_power": EXPLOSIVE_POWER_TABLE  
 }
