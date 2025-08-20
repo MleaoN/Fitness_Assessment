@@ -79,17 +79,17 @@
                 <div class="col-md-3 mb-2">
                     <strong>{{ test|replace:"_, " }}:</strong>
                     <span
-                        class="{% if classification in ('Below Average', 'Poor', 'Obese') %}
-                                   text-danger
-                               {% elif classification in ('Average', 'Essential', 'Underweight', 'Overweight') %}
+                        class="{% if classification == 'Below Average' or classification == 'Poor' or classification == 'Obese' %}
+                                    text-danger
+                               {% elif classification == 'Average' or classification == 'Essential' or classification == 'Underweight' or classification == 'Overweight' %}
                                    text-warning
-                               {% elif classification in ('Excellent', 'Good', 'Normal') %}
+                               {% elif classification == 'Excellent' or classification == 'Good' or classification == 'Normal' %}
                                    text-success
                                {% else %}
-                                   text-secondary
+                                    text-secondary
                                {% endif %}">
                         {{ classification }}
-                    
+                 
                     </span>
                 </div>
                 {% endfor %}
