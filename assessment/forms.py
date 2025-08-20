@@ -79,9 +79,10 @@ class Session4Form(forms.Form):
 
     # Balance
     one_leg_stance_right_eyes_open_sec = forms.FloatField(label="Right-Leg-Eyes-Open (s)", min_value=0)
-    one_leg_stance_Left_eyes_open_sec = forms.FloatField(label="Left-Leg-Eyes-Open (s)", min_value=0)
+    one_leg_stance_left_eyes_open_sec  = forms.FloatField(label="Left-Leg-Eyes-Open (s)", min_value=0)
     one_leg_stance_right_eyes_closed_sec = forms.FloatField(label="Right-Leg-Eyes-Closed (s)", min_value=0)
-    one_leg_stance_left_eyes_closed_sec = forms.FloatField(label="Left-Leg-Eyes-Closed (s)", min_value=0)
+    one_leg_stance_left_eyes_closed_sec  = forms.FloatField(label="Left-Leg-Eyes-Closed (s)", min_value=0)
+
 
     # Flexibility
     toe_touch_cm = forms.FloatField(label="Toe Touch Test (cm)", min_value=0)
