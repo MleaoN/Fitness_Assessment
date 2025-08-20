@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(BASE_DIR))  # <-- project root
 
 # SECRET_KEY and DEBUG from environment variables for security
-SECRET_KEY = '65b42bc7273e6abe5e048ca074dce38e'
+SECRET_KEY = os.environ.get('SECRET_KEY', '65b42bc7273e6abe5e048ca074dce38e')
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 # Allow Render.com hostname and localhost for development
