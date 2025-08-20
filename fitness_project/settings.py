@@ -8,6 +8,14 @@ import os
 from pathlib import Path
 import matplotlib
 
+import logging
+
+logging.basicConfig(
+    stream=sys.stdout,
+    level=logging.DEBUG,
+    format='%(levelname)s:%(name)s:%(message)s'
+)
+
 # Use Agg backend for matplotlib (no GUI)
 matplotlib.use('Agg')
 
