@@ -35,7 +35,7 @@ def calculate_whr(waist, hip):
     return round(waist / hip, 2)
 
 def calculate_power(weight, jump_height_cm):
-    return round((jump_height_cm * 9.81 * weight) / 1000, 2)
+    return round((jump_height_cm *60.7)+ (45.3* weight) - 2055, 2)
 
 def calculate_body_fat(gender, age, skinfolds):
     sum_folds = sum(v for v in skinfolds.values() if v is not None)
