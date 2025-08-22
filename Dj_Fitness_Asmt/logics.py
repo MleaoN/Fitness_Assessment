@@ -91,10 +91,15 @@ def plot_ramp_test(loads, rpe_values):
         ax.axvspan(aerobic_thres, anaerobic_thres, facecolor='khaki', alpha=0.3, label='Moderate Zone')
         ax.axvspan(anaerobic_thres, max(loads), facecolor='lightcoral', alpha=0.3, label='Anaerobic Zone')
 
+    # Force all load values as xticks
+    ax.set_xticks(loads)
+    ax.set_xticklabels([str(int(l)) if l.is_integer() else str(l) for l in loads], rotation=45)
+
     ax.grid(True, linestyle='--', alpha=0.5)
     ax.legend(loc='upper left')
     fig.tight_layout()
     return save_plot_to_memory(fig)
+
 
 
 # ----------------------
