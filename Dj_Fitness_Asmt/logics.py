@@ -127,30 +127,43 @@ TEST_CONSTANTS = {
 # ----------------------
 # Classification
 # ----------------------
-def classify_metric(test_name, gender, age, value):
+def get_age_range(age, thresholds_dict):
+    """
+    Finds the matching age range for the given age 
+    based on the keys of thresholds_dict (e.g., '20-29').
+    """
+    for age_range in thresholds_dict:
+        min_age, max_age = map(int, age_range.split("-"))
+        if min_age <= age <= max_age:
+            return age_range
+    return None
+
+
+def classify_metric(test_name, gender, age, value, condition=None):
     gender_key = gender.capitalize()
     thresholds_dict = TEST_CONSTANTS.get(test_name)
     if not thresholds_dict:
         return None
 
+    
     # OLS special case
     if test_name == "OLS":
-        return "Good" if value >= 0 else "Poor"
-    
+        matched_range = get_age_range(age, thresholds_dict.get(gender_key, {}))
+        if not matched_range or not condition:
+            return None
+
+        threshold_value = thresholds_dict[gender_key][matched_range][condition]
+        return "Good" if value >= threshold_value else "Poor"
+
+
+
+    # ToeTouch special case
     if test_name == "ToeTouch":
-        # find correct age range
-        matched_range = None
-        for age_range in thresholds_dict:
-            min_age, max_age = map(int, age_range.split("-"))
-            if min_age <= age <= max_age:
-                matched_range = age_range
-                break
+        matched_range = get_age_range(age, thresholds_dict)
         if not matched_range:
             return None
 
         values = thresholds_dict[matched_range]
-
-        # classification logic: higher = worse
         if value <= values[1]:
             return "Excellent"
         elif value <= values[2]:
@@ -159,7 +172,6 @@ def classify_metric(test_name, gender, age, value):
             return "Average"
         else:
             return "Poor"
-
 
     # Plank special
     if test_name == "Plank":
@@ -297,12 +309,11 @@ def process_client_data(data):
 
     # Compute balance separately
     ols_results = {
-        "OLS_Open_Right": classify_metric("OLS", data["gender"], data["age"], data["one_leg_stance_right_eyes_open_sec"]),
-        "OLS_Open_Left": classify_metric("OLS", data["gender"], data["age"], data["one_leg_stance_left_eyes_open_sec"]),
-        "OLS_Closed_Right": classify_metric("OLS", data["gender"], data["age"], data["one_leg_stance_right_eyes_closed_sec"]),
-        "OLS_Closed_Left": classify_metric("OLS", data["gender"], data["age"], data["one_leg_stance_left_eyes_closed_sec"]),
+        "OLS_Open_Right": classify_metric("OLS", data["gender"], data["age"], data["one_leg_stance_right_eyes_open_sec"], condition="open"),
+        "OLS_Open_Left": classify_metric("OLS", data["gender"], data["age"], data["one_leg_stance_left_eyes_open_sec"], condition="open"),
+        "OLS_Closed_Right": classify_metric("OLS", data["gender"], data["age"], data["one_leg_stance_right_eyes_closed_sec"], condition="closed"),
+        "OLS_Closed_Left": classify_metric("OLS", data["gender"], data["age"], data["one_leg_stance_left_eyes_closed_sec"], condition="closed"),
     }
-
     # Add only overall balance to classifications
     classifications["Overall Balance"] = overall_balance(ols_results)
 
