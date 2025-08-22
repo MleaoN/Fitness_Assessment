@@ -266,7 +266,15 @@ def process_client_data(data):
 
     plots = {
         "bmi_plot": plot_bmi_curve(data["weight_kg"], data["height_cm"]),
-        "ramp_plot": plot_ramp_test(ramp_loads, ramp_rpe)
+        # plots
+plots = {
+    "bmi_plot": plot_bmi_curve(data["weight_kg"], data["height_cm"]),
+    "ramp_plot": plot_ramp_test(
+        [float(x.strip()) for x in data["ramp_test_loads"].split(",")],
+        [float(x.strip()) for x in data["ramp_test_rpes"].split(",")]
+    )
+}
+
     }
 
     return {
