@@ -165,10 +165,10 @@ def classify_metric(test_name, gender, age, value):
     if test_name == "Plank":
         perc = thresholds_dict.get(gender_key)
         if not perc: return None
-        if value >= perc[8]: return "Excellent"
-        elif value >= perc[6]: return "Good"
-        elif value >= perc[4]: return "Average"
-        elif value >= perc[2]: return "Below Average"
+        if value >= perc[9]: return "Excellent"
+        elif value >= perc[7]: return "Good"
+        elif value >= perc[5]: return "Average"
+        elif value >= perc[3]: return "Below Average"
         return "Poor"
 
      # BMI special case
