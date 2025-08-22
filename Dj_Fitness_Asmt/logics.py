@@ -35,17 +35,14 @@ def calculate_whr(waist, hip):
     return round(waist / hip, 2)
 
 def calculate_power(weight, jump_height_cm):
-    return round((jump_height_cm *60.7)+ (45.3* weight) - 2055, 2)
+    return round((jump_height_cm * 60.7) + (45.3 * weight) - 2055, 2)
 
 def calculate_body_fat(gender, age, skinfolds):
     sum_folds = sum(v for v in skinfolds.values() if v is not None)
     if gender.lower() == "male":
-        # chest, abdomen, thigh
         density = 1.10938 - 0.0008267 * sum_folds + 0.0000016 * sum_folds**2 - 0.0002574 * age
     else:
-        # triceps, suprailiac, thigh
         density = 1.0994921 - 0.0009929 * sum_folds + 0.0000023 * sum_folds**2 - 0.0001392 * age
-
     body_fat = (495 / density) - 450
     return round(body_fat, 2)
 
@@ -74,29 +71,21 @@ def plot_bmi_curve(weight_kg, height_cm):
 
 
 def plot_ramp_test(loads, rpe_values):
-    """
-    Plot Ramp Test RPE vs Load with aerobic, moderate, and anaerobic zones.
-    """
-        
     fig, ax = plt.subplots(figsize=(6,4))
     ax.plot(loads, rpe_values, marker='o', color='black', label='RPE')
-
     ax.set_xlabel("Load")
     ax.set_ylabel("RPE")
     ax.set_ylim(0, 10)
 
-    # Convert lists to numpy arrays for easier filtering
     loads_arr = np.array(loads)
     rpes_arr = np.array(rpe_values)
 
-    # Compute thresholds
     aerobic_mask = (rpes_arr > 2) & (rpes_arr <= 6)
     moderate_mask = (rpes_arr > 6) & (rpes_arr < 9)
 
     aerobic_thres = loads_arr[aerobic_mask].mean() if np.any(aerobic_mask) else None
     anaerobic_thres = loads_arr[moderate_mask].mean() if np.any(moderate_mask) else None
 
-    # Plot threshold zones if computed
     if aerobic_thres is not None and anaerobic_thres is not None:
         ax.axvspan(min(loads), aerobic_thres, facecolor='lightgreen', alpha=0.3, label='Aerobic Zone')
         ax.axvspan(aerobic_thres, anaerobic_thres, facecolor='khaki', alpha=0.3, label='Moderate Zone')
@@ -105,75 +94,63 @@ def plot_ramp_test(loads, rpe_values):
     ax.grid(True, linestyle='--', alpha=0.5)
     ax.legend(loc='upper left')
     fig.tight_layout()
-    
     return save_plot_to_memory(fig)
 
 
 # ----------------------
-# TEST_CONSTANTS for classify_metric
+# TEST_CONSTANTS
 # ----------------------
 TEST_CONSTANTS = {
     "BMI": {"Male": [18.5, 25, 30], "Female": [18.5, 25, 30]},
-    "vertical_jump_power":EXPLOSIVE_POWER_TABLE,
+    "vertical_jump_power": EXPLOSIVE_POWER_TABLE,
     "WHR": WHR_RANGES,
     "BodyFat": BODY_FAT_TABLE,
     "PushUp": push_thresholds,
     "Squat": squat_thresholds,
     "Plank": plank_percentiles,
-    "OLS": OLS_THRESHOLDS,
+    "OLS": OLS_THRESHOLDS,  # expects nested dict by gender → age → {"open":val, "closed":val}
     "ToeTouch": TOE_TOUCH_THRESHOLDS,
 }
 
 # ----------------------
-# Classification
+# Helpers
 # ----------------------
 def get_age_range(age, thresholds_dict):
-    """
-    Finds the matching age range for the given age 
-    based on the keys of thresholds_dict (e.g., '20-29').
-    """
     for age_range in thresholds_dict:
         min_age, max_age = map(int, age_range.split("-"))
         if min_age <= age <= max_age:
             return age_range
     return None
 
-
+# ----------------------
+# Classification
+# ----------------------
 def classify_metric(test_name, gender, age, value, condition=None):
     gender_key = gender.capitalize()
     thresholds_dict = TEST_CONSTANTS.get(test_name)
     if not thresholds_dict:
         return None
 
-    
-    # OLS special case
+    # OLS
     if test_name == "OLS":
         matched_range = get_age_range(age, thresholds_dict.get(gender_key, {}))
         if not matched_range or not condition:
             return None
-
         threshold_value = thresholds_dict[gender_key][matched_range][condition]
         return "Good" if value >= threshold_value else "Poor"
 
-
-
-    # ToeTouch special case
+    # ToeTouch
     if test_name == "ToeTouch":
         matched_range = get_age_range(age, thresholds_dict)
         if not matched_range:
             return None
-
         values = thresholds_dict[matched_range]
-        if value <= values[1]:
-            return "Excellent"
-        elif value <= values[2]:
-            return "Good"
-        elif value <= values[3]:
-            return "Average"
-        else:
-            return "Poor"
+        if value <= values[1]: return "Excellent"
+        elif value <= values[2]: return "Good"
+        elif value <= values[3]: return "Average"
+        else: return "Poor"
 
-    # Plank special
+    # Plank
     if test_name == "Plank":
         perc = thresholds_dict.get(gender_key)
         if not perc: return None
@@ -183,34 +160,20 @@ def classify_metric(test_name, gender, age, value, condition=None):
         elif value >= perc[3]: return "Below Average"
         return "Poor"
 
-     # BMI special case
+    # BMI
     if test_name == "BMI":
-        if value < 18.5:
-            return "Underweight"
-        elif value < 25:
-            return "Normal"
-        elif value < 30:
-            return "Overweight"
-        else:
-            return "Obese"
+        if value < 18.5: return "Underweight"
+        elif value < 25: return "Normal"
+        elif value < 30: return "Overweight"
+        else: return "Obese"
+
     # Standard thresholds
     age_ranges = thresholds_dict.get(gender_key)
-    
-    # If it's a dict (age ranges), find correct range
     if isinstance(age_ranges, dict):
-        matched_range = None
-        for age_range in age_ranges:
-            if "-" in age_range:
-                min_age, max_age = map(int, age_range.split("-"))
-            else:
-                min_age, max_age = int(age_range.replace("+","")), 200
-            if min_age <= age <= max_age:
-                matched_range = age_range
-                break
+        matched_range = get_age_range(age, age_ranges)
         if not matched_range:
             return None
         values = age_ranges[matched_range]
-    # If it's a list (no age ranges)
     elif isinstance(age_ranges, list):
         values = age_ranges
     else:
@@ -219,83 +182,57 @@ def classify_metric(test_name, gender, age, value, condition=None):
     order = threshold_order[1:] if test_name != "BodyFat" else threshold_order
     if test_name == "BodyFat":
         for i, threshold in enumerate(values):
-            if value <= threshold:
-                return order[i]
+            if value <= threshold: return order[i]
         return order[-1]
-    else: 
+    else:
         for i, threshold in enumerate(values):
-            if value >= threshold:
-                return order[i]
+            if value >= threshold: return order[i]
         return order[-1]
 
-
+# ----------------------
+# OLS Overall Balance
+# ----------------------
 def overall_balance(ols_results: dict) -> str:
-    """
-    Takes the 4 OLS classifications and returns an overall balance score.
-    Expected ols_results format:
-    {
-        "OLS_Open_Right": "Good",
-        "OLS_Open_Left": "Poor",
-        "OLS_Closed_Right": "Excellent",
-        "OLS_Closed_Left": "Fair"
-    }
-    """
-    
     values = list(ols_results.values())
-
-    # Normalize (capitalize first letter only)
-    normalized = [v.lower() for v in values]
-
+    normalized = [v.lower() for v in values if v]
     bad_count = sum(1 for v in normalized if v == "poor")
 
-    if all(v == "good" or v == "excellent" for v in normalized):
+    if all(v in ("good", "excellent") for v in normalized):
         return "Excellent"
     elif bad_count == 1:
         return "Good"
-    elif bad_count >= 2 and bad_count < 4:
+    elif 2 <= bad_count < 4:
         return "Below Average"
     elif bad_count == 4:
         return "Poor"
+    return "Average"
 
 # ----------------------
-# Master function
+# Master
 # ----------------------
 def process_client_data(data):
-    # Normalize gender
-    gender_key = data["gender"].capitalize()  # "male" -> "Male"
-    
-    # Gender-specific skinfold selection
+    gender_key = data.get("gender", "").capitalize()
+
+    if not gender_key:
+        return {}
+
+    # skinfolds
     if gender_key == "Male":
-        skinfolds = {
-            "chest": data.get("chest"),
-            "abdomen": data.get("abdomen"),
-            "thigh": data.get("thigh")
-        }
-
+        skinfolds = { "chest": data.get("chest"), "abdomen": data.get("abdomen"), "thigh": data.get("thigh") }
     else:
-        skinfolds = {
-            "triceps": data.get("triceps"),
-            "suprailiac": data.get("suprailiac"),
-            "thigh": data.get("thigh")
-        }
+        skinfolds = { "triceps": data.get("triceps"), "suprailiac": data.get("suprailiac"), "thigh": data.get("thigh") }
 
-
-    # Calculations
     bmi = calculate_bmi(data["weight_kg"], data["height_cm"])
     whr = calculate_whr(data["waist_cm"], data["hip_cm"])
     body_fat = calculate_body_fat(data["gender"], data["age"], skinfolds)
     vertical_jump_power = calculate_power(data["weight_kg"], data["vertical_jump_height_cm"])
 
-
-    # Ramp Test
     ramp_loads = [float(x.strip()) for x in data["ramp_test_loads"].split(",")]
     ramp_rpe = [float(x.strip()) for x in data["ramp_test_rpes"].split(",")]
 
-    # Classifications
-    # Classifications
     classifications = {
         "BMI": classify_metric("BMI", data["gender"], data["age"], bmi),
-        "WHR": classify_metric("WHR", data["gender"],  data["age"], whr),
+        "WHR": classify_metric("WHR", data["gender"], data["age"], whr),
         "Body Fat": classify_metric("BodyFat", data["gender"], data["age"], body_fat),
         "vertical_jump_power": classify_metric("vertical_jump_power", data["gender"], data["age"], vertical_jump_power),
         "PushUps": classify_metric("PushUp", data["gender"], data["age"], data["pushup_count"]),
@@ -304,14 +241,12 @@ def process_client_data(data):
         "ToeTouch": classify_metric("ToeTouch", data["gender"], data["age"], data["toe_touch_cm"]),
     }
 
-    # Compute balance separately
     ols_results = {
         "OLS_Open_Right": classify_metric("OLS", data["gender"], data["age"], data["one_leg_stance_right_eyes_open_sec"], condition="open"),
         "OLS_Open_Left": classify_metric("OLS", data["gender"], data["age"], data["one_leg_stance_left_eyes_open_sec"], condition="open"),
         "OLS_Closed_Right": classify_metric("OLS", data["gender"], data["age"], data["one_leg_stance_right_eyes_closed_sec"], condition="closed"),
         "OLS_Closed_Left": classify_metric("OLS", data["gender"], data["age"], data["one_leg_stance_left_eyes_closed_sec"], condition="closed"),
     }
-    # Add only overall balance to classifications
     classifications["Overall Balance"] = overall_balance(ols_results)
 
     circumferences = {
@@ -324,7 +259,6 @@ def process_client_data(data):
         "thigh_right_cm": data["thigh_rigth_cm"]
     }
 
-    # Plots
     plots = {
         "bmi_plot": plot_bmi_curve(data["weight_kg"], data["height_cm"]),
         "ramp_plot": plot_ramp_test(ramp_loads, ramp_rpe)
