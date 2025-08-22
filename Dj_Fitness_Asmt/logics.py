@@ -250,9 +250,6 @@ def overall_balance(ols_results: dict) -> str:
 
     if all(v == "good" or v == "excellent" for v in normalized):
         return "Excellent"
-    elif bad_count == 0:  
-        # No "poor" values but not all good/excellent → mix
-        return "Good"
     elif bad_count == 1:
         return "Good"
     elif bad_count >= 2 and bad_count < 4:
