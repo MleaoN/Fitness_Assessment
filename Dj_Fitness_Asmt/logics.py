@@ -172,13 +172,16 @@ def classify_metric(test_name, gender, age, value, condition=None):
         elif value < 30: return "Overweight"
         else: return "Obese"
 
-    # WHR
     if test_name == "WHR":
         ranges = thresholds_dict.get(gender_key)
-        if not ranges:
-            return None
     
-        # ranges = [excellent, good, average, poor]
+        if gender_key == "Female":
+            ranges = [0, 0.75, 0.80, 0.86, float("inf")]
+        elif gender_key == "Male":
+            ranges = [0, 0.85, 0.90, 0.95, float("inf")]
+        else:
+            raise ValueError(f"Invalid gender: {gender_key}")
+    
         if value < ranges[1]:
             return "Excellent"
         elif value < ranges[2]:
