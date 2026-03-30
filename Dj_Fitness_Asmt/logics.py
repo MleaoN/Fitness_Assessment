@@ -171,7 +171,8 @@ def classify_metric(test_name, gender, age, value, condition=None):
         elif value < 25: return "Normal"
         elif value < 30: return "Overweight"
         else: return "Obese"
-
+    
+    #WHR
     if test_name == "WHR":
         ranges = thresholds_dict.get(gender_key)
     
