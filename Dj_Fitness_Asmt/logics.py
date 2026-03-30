@@ -172,6 +172,22 @@ def classify_metric(test_name, gender, age, value, condition=None):
         elif value < 30: return "Overweight"
         else: return "Obese"
 
+    # WHR
+    if test_name == "WHR":
+        ranges = thresholds_dict.get(gender_key)
+        if not ranges:
+            return None
+    
+        # ranges = [excellent, good, average, poor]
+        if value < ranges[1]:
+            return "Excellent"
+        elif value < ranges[2]:
+            return "Good"
+        elif value < ranges[3]:
+            return "Average"
+        else:
+            return "Poor"
+    
     # Standard thresholds
     age_ranges = thresholds_dict.get(gender_key)
     if isinstance(age_ranges, dict):
